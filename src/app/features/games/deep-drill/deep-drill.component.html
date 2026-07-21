@@ -1,0 +1,31 @@
+<div class="drill">
+  <div class="drill__hud" aria-live="polite">
+    <div class="drill__stat">
+      <span>Paliwo</span>
+      <strong>{{ fuel() }}/{{ maxFuel() }}</strong>
+    </div>
+    <div class="drill__stat">
+      <span>Ładunek</span>
+      <strong>{{ cargo() }}</strong>
+    </div>
+    <div class="drill__stat">
+      <span>Głębokość</span>
+      <strong>{{ depth() }}</strong>
+    </div>
+  </div>
+
+  <p class="drill__message">{{ message() }}</p>
+
+  <div class="drill__canvas-wrap">
+    <canvas #canvas class="drill__canvas" aria-label="Gra Deep Drill"></canvas>
+  </div>
+
+  <div class="drill__mobile-controls" aria-label="Sterowanie dotykowe">
+    <button type="button" class="btn btn--ghost drill__control" (click)="setDirection('up')">↑</button>
+    <div class="drill__mobile-row">
+      <button type="button" class="btn btn--ghost drill__control" (click)="setDirection('left')">←</button>
+      <button type="button" class="btn btn--ghost drill__control" (click)="setDirection('down')">↓</button>
+      <button type="button" class="btn btn--ghost drill__control" (click)="setDirection('right')">→</button>
+    </div>
+  </div>
+</div>

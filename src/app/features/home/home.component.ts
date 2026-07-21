@@ -12,5 +12,5 @@ import { GameTileComponent } from '../../shared/components/game-tile/game-tile.c
 export class HomeComponent {
   private readonly gamesService = inject(GamesService);
 
-  readonly games = this.gamesService.getGames();
+  readonly games = this.gamesService.getAvailableGames();
 }

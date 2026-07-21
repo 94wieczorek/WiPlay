@@ -8,6 +8,10 @@ export const GAME_ROUTE_LOADERS: Readonly<Record<string, GameComponentLoader>> =
     import('../../features/games/snake/snake.component').then(
       (module) => module.SnakeComponent,
     ),
+  'deep-drill': () =>
+    import('../../features/games/deep-drill/deep-drill.component').then(
+      (module) => module.DeepDrillComponent,
+    ),
 };
 
 export function hasGameLoader(slug: string): boolean {
