@@ -1,0 +1,18 @@
+<header class="header">
+  <div class="header__inner container">
+    <a routerLink="/" class="header__logo" aria-label="Wiplay — strona główna">
+      <span class="header__logo-mark">W</span>
+      <span class="header__logo-text">Wiplay</span>
+    </a>
+    <nav class="header__nav" aria-label="Nawigacja główna">
+      <a
+        routerLink="/"
+        routerLinkActive="header__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="header__link"
+      >
+        Gry
+      </a>
+    </nav>
+  </div>
+</header>
