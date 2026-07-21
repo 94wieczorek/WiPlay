@@ -6,6 +6,7 @@ export const GAMES_CATALOG: readonly GameDefinition[] = [
     slug: 'snake',
     title: 'Snake',
     description: 'Klasyczny wąż — zbieraj jedzenie, unikaj ścian i własnego ogona.',
+    thumbnailUrl: '/images/snake-thumbnail.png',
     category: 'Arcade',
     controls: [
       'Pasek nad grą — poziom 1–10 (wyższy = szybciej i więcej punktów)',

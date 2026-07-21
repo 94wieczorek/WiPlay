@@ -24,15 +24,12 @@
   font-weight: 700;
 }
 
-.header__logo-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.header__logo-image {
   width: 2.25rem;
   height: 2.25rem;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
-  font-size: 1.125rem;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px var(--color-border);
 }
 
 .header__logo-text {
