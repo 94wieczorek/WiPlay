@@ -16,8 +16,66 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--color-text-primary);
-  background: linear-gradient(135deg, #070b1a 0%, #111633 45%, #35145f 100%);
-  background-attachment: fixed;
+  background-color: var(--color-bg-primary);
+  overflow-x: hidden;
+}
+
+/* Layered gaming atmosphere: base wash + glow orbs + grid + vignette */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  background:
+    radial-gradient(ellipse 70% 55% at 12% 18%, rgba(168, 85, 247, 0.38) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 12%, rgba(109, 74, 255, 0.32) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(236, 72, 153, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 40% at 18% 85%, rgba(34, 211, 238, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(17, 22, 51, 0.9) 0%, #070b1a 75%);
+  animation: wiplay-glow-drift 22s ease-in-out infinite alternate;
+}
+
+body::after {
+  background-image:
+    linear-gradient(rgba(7, 11, 26, 0.55), rgba(7, 11, 26, 0.72)),
+    linear-gradient(rgba(168, 85, 247, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.07) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, transparent 40%, rgba(7, 11, 26, 0.85) 100%);
+  background-size:
+    auto,
+    48px 48px,
+    48px 48px,
+    auto;
+  background-position: center top;
+  opacity: 0.95;
+}
+
+@keyframes wiplay-glow-drift {
+  0% {
+    transform: scale(1) translate(0, 0);
+    filter: hue-rotate(0deg) saturate(1);
+  }
+
+  50% {
+    transform: scale(1.05) translate(-1.5%, 1%);
+    filter: hue-rotate(8deg) saturate(1.15);
+  }
+
+  100% {
+    transform: scale(1.08) translate(1.5%, -1.5%);
+    filter: hue-rotate(-6deg) saturate(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
 }
 
 a {

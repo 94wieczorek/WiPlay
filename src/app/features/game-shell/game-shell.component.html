@@ -91,20 +91,32 @@
           </button>
         </div>
 
-        <button
-          type="button"
-          class="btn btn--ghost game-shell__expand-btn"
-          (click)="toggleViewportExpanded()"
-          [attr.aria-pressed]="viewportExpanded()"
-        >
-          {{ viewportExpandLabel() }}
-        </button>
+        <div class="game-shell__scale" aria-label="Skala obszaru gry">
+          <div class="game-shell__scale-header">
+            <span class="game-shell__scale-label">Skala</span>
+            <strong class="game-shell__scale-value">{{ viewportScaleLabel() }}</strong>
+          </div>
+          <input
+            type="range"
+            class="game-shell__scale-slider"
+            [min]="minViewportScale"
+            [max]="maxViewportScale"
+            [step]="viewportScaleStep"
+            [value]="viewportScale()"
+            (input)="onViewportScaleInput($event)"
+            aria-label="Powiększenie obszaru gry od 1 do 2"
+          />
+          <div class="game-shell__scale-ends" aria-hidden="true">
+            <span>1.0×</span>
+            <span>2.0×</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div
       class="game-shell__viewport"
-      [class.game-shell__viewport--expanded]="viewportExpanded()"
+      [style.--game-canvas-max]="viewportCanvasMaxPx()"
     >
       <div class="game-shell__play-area">
         <ng-container #gameHost></ng-container>

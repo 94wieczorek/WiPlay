@@ -38,7 +38,10 @@ export class GameShellComponent {
   readonly controller = signal<GameController | null>(null);
   readonly loadError = signal(false);
   readonly isMounting = signal(false);
-  readonly viewportExpanded = signal(false);
+  readonly viewportScale = signal(1);
+  readonly minViewportScale = 1;
+  readonly maxViewportScale = 2;
+  readonly viewportScaleStep = 0.1;
 
   private gameComponentRef: ComponentRef<GameController> | null = null;
   private mountToken = 0;
@@ -83,17 +86,33 @@ export class GameShellComponent {
     this.setGameLevel(Number(input.value));
   }
 
-  toggleViewportExpanded(): void {
-    this.viewportExpanded.update((expanded) => !expanded);
+  onViewportScaleInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const raw = Number(input.value);
+    if (!Number.isFinite(raw)) {
+      return;
+    }
+
+    const clamped = Math.min(
+      this.maxViewportScale,
+      Math.max(this.minViewportScale, Math.round(raw * 10) / 10),
+    );
+    this.viewportScale.set(clamped);
   }
 
-  viewportExpandLabel(): string {
-    return this.viewportExpanded() ? 'Normalny widok' : 'Powiększ 2×';
+  viewportScaleLabel(): string {
+    return `${this.viewportScale().toFixed(1)}×`;
+  }
+
+  viewportCanvasMaxPx(): string {
+    return `${Math.round(520 * this.viewportScale())}px`;
   }
 
   focusGameArea(): void {
     const hostElement = this.gameHost()?.element.nativeElement as HTMLElement | undefined;
-    hostElement?.querySelector<HTMLElement>('app-snake')?.focus();
+    hostElement
+      ?.querySelector<HTMLElement>('app-snake, app-deep-drill, app-deep-drill-v2')
+      ?.focus();
   }
 
   statusLabel(): string {
@@ -115,6 +134,7 @@ export class GameShellComponent {
 
     this.loadError.set(false);
     this.isMounting.set(false);
+    this.viewportScale.set(1);
     this.clearGameHost();
 
     const definition = this.gamesService.getBySlug(slug);

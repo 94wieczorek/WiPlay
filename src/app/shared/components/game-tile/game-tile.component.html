@@ -1,25 +1,55 @@
-<article class="game-tile" [class.game-tile--soon]="!game().isAvailable">
-  <div class="game-tile__thumb" [attr.aria-hidden]="true">
-    @if (game().thumbnailUrl) {
-      <img [src]="game().thumbnailUrl" [alt]="game().title" class="game-tile__image" />
-    } @else {
-      <span class="game-tile__placeholder">{{ initials() }}</span>
-    }
-  </div>
+@if (game().isAvailable) {
+  <a
+    class="game-tile game-tile--link"
+    [routerLink]="['/play', game().slug]"
+    [attr.aria-label]="'Zagraj w ' + game().title"
+  >
+    <div class="game-tile__thumb">
+      @if (game().thumbnailUrl) {
+        <img
+          [src]="game().thumbnailUrl"
+          [alt]="''"
+          class="game-tile__image"
+          loading="lazy"
+        />
+      } @else {
+        <span class="game-tile__placeholder" aria-hidden="true">{{ initials() }}</span>
+      }
+    </div>
 
-  <div class="game-tile__body">
-    <span class="game-tile__category">{{ game().category }}</span>
-    <h2 class="game-tile__title">{{ game().title }}</h2>
-    <p class="game-tile__description">{{ game().description }}</p>
-  </div>
+    <div class="game-tile__body">
+      <span class="game-tile__category">{{ game().category }}</span>
+      <h2 class="game-tile__title">{{ game().title }}</h2>
+      <p class="game-tile__description">{{ game().description }}</p>
+    </div>
 
-  <div class="game-tile__actions">
-    @if (game().isAvailable) {
-      <a [routerLink]="['/play', game().slug]" class="btn btn--primary game-tile__play">
-        Zagraj
-      </a>
-    } @else {
+    <div class="game-tile__actions">
+      <span class="btn btn--primary game-tile__play">Zagraj</span>
+    </div>
+  </a>
+} @else {
+  <article class="game-tile game-tile--soon">
+    <div class="game-tile__thumb">
+      @if (game().thumbnailUrl) {
+        <img
+          [src]="game().thumbnailUrl"
+          [alt]="game().title"
+          class="game-tile__image"
+          loading="lazy"
+        />
+      } @else {
+        <span class="game-tile__placeholder" aria-hidden="true">{{ initials() }}</span>
+      }
+    </div>
+
+    <div class="game-tile__body">
+      <span class="game-tile__category">{{ game().category }}</span>
+      <h2 class="game-tile__title">{{ game().title }}</h2>
+      <p class="game-tile__description">{{ game().description }}</p>
+    </div>
+
+    <div class="game-tile__actions">
       <span class="game-tile__soon">Wkrótce</span>
-    }
-  </div>
-</article>
+    </div>
+  </article>
+}

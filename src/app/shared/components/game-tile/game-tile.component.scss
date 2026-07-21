@@ -18,6 +18,17 @@
     box-shadow: var(--shadow-card-hover);
   }
 
+  &--link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent-light);
+      outline-offset: 3px;
+    }
+  }
+
   &--soon {
     opacity: 0.65;
   }
