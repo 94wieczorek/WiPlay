@@ -1,0 +1,12 @@
+<section class="home container">
+  <header class="home__intro">
+    <h1 class="page-title">Wybierz grę</h1>
+    <p class="page-subtitle">Graj od razu w przeglądarce — bez instalacji i logowania.</p>
+  </header>
+
+  <div class="game-grid">
+    @for (game of games; track game.id) {
+      <app-game-tile [game]="game" />
+    }
+  </div>
+</section>
