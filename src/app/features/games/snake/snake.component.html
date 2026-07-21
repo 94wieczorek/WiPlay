@@ -1,0 +1,14 @@
+<div class="snake">
+  <div class="snake__canvas-wrap">
+    <canvas #canvas class="snake__canvas" aria-label="Gra Snake"></canvas>
+  </div>
+
+  <div class="snake__mobile-controls" aria-label="Sterowanie dotykowe">
+    <button type="button" class="btn btn--ghost snake__control" (click)="setDirection('up')">↑</button>
+    <div class="snake__mobile-row">
+      <button type="button" class="btn btn--ghost snake__control" (click)="setDirection('left')">←</button>
+      <button type="button" class="btn btn--ghost snake__control" (click)="setDirection('down')">↓</button>
+      <button type="button" class="btn btn--ghost snake__control" (click)="setDirection('right')">→</button>
+    </div>
+  </div>
+</div>
