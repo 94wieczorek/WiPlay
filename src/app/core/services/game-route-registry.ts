@@ -12,6 +12,10 @@ export const GAME_ROUTE_LOADERS: Readonly<Record<string, GameComponentLoader>> =
     import('../../features/games/deep-drill/deep-drill.component').then(
       (module) => module.DeepDrillComponent,
     ),
+  'deep-drill-v2': () =>
+    import('../../features/games/deep-drill-v2/deep-drill-v2.component').then(
+      (module) => module.DeepDrillV2Component,
+    ),
 };
 
 export function hasGameLoader(slug: string): boolean {

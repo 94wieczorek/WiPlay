@@ -1,0 +1,138 @@
+:host {
+  display: block;
+  width: 100%;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent-light);
+    outline-offset: 4px;
+    border-radius: var(--radius-md);
+  }
+}
+
+.drill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.drill__hud {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.drill__stat {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: rgba(7, 11, 26, 0.65);
+  text-align: center;
+
+  span {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  strong {
+    font-size: var(--font-size-base);
+    color: var(--color-accent-light);
+  }
+
+  small {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+  }
+}
+
+.drill__message {
+  margin: 0;
+  width: 100%;
+  min-height: 1.4rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.drill__shop {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: var(--radius-md);
+  background: rgba(8, 28, 18, 0.75);
+}
+
+.drill__shop-title {
+  margin: 0 0 0.6rem;
+  color: #86efac;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: center;
+}
+
+.drill__shop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.drill__shop-btn {
+  font-size: var(--font-size-sm);
+}
+
+.drill__shop-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.drill__canvas-wrap {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #050814;
+  box-shadow: 0 0 28px rgba(168, 85, 247, 0.18);
+}
+
+.drill__canvas {
+  display: block;
+  width: 100%;
+}
+
+.drill__mobile-controls {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.drill__mobile-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.drill__control {
+  min-width: 3rem;
+  min-height: 3rem;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .drill__hud {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .drill__mobile-controls {
+    display: flex;
+  }
+}

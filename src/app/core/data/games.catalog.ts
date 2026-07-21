@@ -30,4 +30,23 @@ export const GAMES_CATALOG: readonly GameDefinition[] = [
     ],
     isAvailable: false,
   },
+  {
+    id: 'deep-drill-v2',
+    slug: 'deep-drill-v2',
+    title: 'Deep Drill',
+    description:
+      'Kop w głąb ziemi w stylu Motherload: zarządzaj paliwem, HP i ładunkiem, sprzedawaj minerały w sklepie na powierzchni.',
+    thumbnailUrl: '/images/deep-drill-thumbnail.png',
+    category: 'Adventure',
+    controls: [
+      'Strzałki / WASD — ruch; w górę tylko pustym szybem (bez kopania w górę)',
+      'Start: 100 HP, gotówka i limit ładunku — kopanie kamienia zabiera HP',
+      'Strefy: 0–15 miedź; 15–25 bufor srebra; od 25 srebro; 35–50 bufor złota; od 50 złoto; od 75 platyna; kamienie od 100',
+      'Sklep: sprzedaż, paliwo, naprawa, ulepszenia wiertła i baku',
+      'Im głębiej, tym twardsze podłoże — lepsze wiertło kopie szybciej',
+      'Lawa, 0 HP lub brak paliwa = koniec gry',
+      'Spacja — pauza, R — restart',
+    ],
+    isAvailable: true,
+  },
 ];

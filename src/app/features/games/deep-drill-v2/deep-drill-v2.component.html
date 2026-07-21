@@ -1,0 +1,104 @@
+<div class="drill">
+  <div class="drill__hud" aria-live="polite">
+    <div class="drill__stat">
+      <span>HP</span>
+      <strong>{{ hp() }}/{{ maxHp() }}</strong>
+    </div>
+    <div class="drill__stat">
+      <span>Paliwo</span>
+      <strong>{{ fuel() }}/{{ maxFuel() }}</strong>
+    </div>
+    <div class="drill__stat">
+      <span>Gotówka</span>
+      <strong>{{ money() }} $</strong>
+    </div>
+    <div class="drill__stat">
+      <span>Ładunek</span>
+      <strong>{{ cargoWeight() }}/{{ cargoMax() }}</strong>
+      <small>{{ cargoValue() }} $</small>
+    </div>
+    <div class="drill__stat">
+      <span>Głębokość</span>
+      <strong>{{ depth() }}</strong>
+    </div>
+    <div class="drill__stat">
+      <span>Wiertło</span>
+      <strong>Lv {{ drillLevel() }}</strong>
+    </div>
+    <div class="drill__stat">
+      <span>Bak</span>
+      <strong>Lv {{ fuelTankLevel() }}</strong>
+    </div>
+  </div>
+
+  <p class="drill__message">{{ message() }}</p>
+
+  @if (shopAvailable()) {
+    <div class="drill__shop" aria-label="Sklep na powierzchni">
+      <p class="drill__shop-title">Sklep — powierzchnia</p>
+      <div class="drill__shop-actions">
+        <button
+          type="button"
+          class="btn btn--primary drill__shop-btn"
+          [disabled]="cargoValue() <= 0"
+          (click)="sellAtShop()"
+        >
+          Sprzedaj ładunek ({{ cargoValue() }} $)
+        </button>
+        <button
+          type="button"
+          class="btn btn--ghost drill__shop-btn"
+          [disabled]="money() < fuelPackCost || fuel() >= maxFuel()"
+          (click)="buyFuel()"
+        >
+          Paliwo +{{ fuelPackAmount }} ({{ fuelPackCost }} $)
+        </button>
+        <button
+          type="button"
+          class="btn btn--ghost drill__shop-btn"
+          [disabled]="money() < repairPackCost || hp() >= maxHp()"
+          (click)="buyRepair()"
+        >
+          Naprawa +{{ repairPackAmount }} HP ({{ repairPackCost }} $)
+        </button>
+        <button
+          type="button"
+          class="btn btn--ghost drill__shop-btn"
+          [disabled]="drillUpgradeCost() === null || money() < (drillUpgradeCost() ?? 0)"
+          (click)="upgradeDrill()"
+        >
+          @if (drillUpgradeCost() === null) {
+            Wiertło max (Lv {{ maxDrillLevel }})
+          } @else {
+            Wiertło ↑{{ drillLevel() + 1 }} ({{ drillUpgradeCost() }} $)
+          }
+        </button>
+        <button
+          type="button"
+          class="btn btn--ghost drill__shop-btn"
+          [disabled]="fuelTankUpgradeCost() === null || money() < (fuelTankUpgradeCost() ?? 0)"
+          (click)="upgradeFuelTank()"
+        >
+          @if (fuelTankUpgradeCost() === null) {
+            Bak max (Lv {{ maxFuelTankLevel }})
+          } @else {
+            Bak ↑{{ fuelTankLevel() + 1 }} ({{ fuelTankUpgradeCost() }} $)
+          }
+        </button>
+      </div>
+    </div>
+  }
+
+  <div class="drill__canvas-wrap">
+    <canvas #canvas class="drill__canvas" aria-label="Gra Deep Drill v2"></canvas>
+  </div>
+
+  <div class="drill__mobile-controls" aria-label="Sterowanie dotykowe">
+    <button type="button" class="btn btn--ghost drill__control" (click)="setDirection('up')">↑</button>
+    <div class="drill__mobile-row">
+      <button type="button" class="btn btn--ghost drill__control" (click)="setDirection('left')">←</button>
+      <button type="button" class="btn btn--ghost drill__control" (click)="setDirection('down')">↓</button>
+      <button type="button" class="btn btn--ghost drill__control" (click)="setDirection('right')">→</button>
+    </div>
+  </div>
+</div>
