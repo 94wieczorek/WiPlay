@@ -1,0 +1,33 @@
+@import './styles/variables';
+@import './styles/layout';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-text-primary);
+  background: linear-gradient(135deg, #070b1a 0%, #111633 45%, #35145f 100%);
+  background-attachment: fixed;
+}
+
+a {
+  color: var(--color-accent-light);
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+button {
+  font: inherit;
+}
