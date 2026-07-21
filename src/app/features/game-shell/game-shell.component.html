@@ -1,0 +1,79 @@
+@if (game(); as currentGame) {
+  <section class="game-shell container">
+    <header class="game-shell__header">
+      <a routerLink="/" class="btn btn--ghost game-shell__back">← Wróć do listy gier</a>
+      <div class="game-shell__heading">
+        <span class="game-shell__category">{{ currentGame.category }}</span>
+        <h1 class="page-title game-shell__title">{{ currentGame.title }}</h1>
+      </div>
+    </header>
+
+    <div class="game-shell__toolbar">
+      <div class="game-shell__scores">
+        <div class="game-shell__score-box">
+          <span class="game-shell__score-label">Wynik</span>
+          <strong class="game-shell__score-value">{{ controller()?.score() ?? 0 }}</strong>
+        </div>
+        <div class="game-shell__score-box">
+          <span class="game-shell__score-label">Rekord</span>
+          <strong class="game-shell__score-value">{{ controller()?.bestScore() ?? 0 }}</strong>
+        </div>
+        <div class="game-shell__score-box">
+          <span class="game-shell__score-label">Status</span>
+          <strong class="game-shell__score-value game-shell__score-value--status">{{ statusLabel() }}</strong>
+        </div>
+      </div>
+
+      <div class="game-shell__actions">
+        <button
+          type="button"
+          class="btn btn--primary"
+          (click)="startGame()"
+          [disabled]="!controller() || controller()?.status() === 'running'"
+        >
+          Start
+        </button>
+        <button
+          type="button"
+          class="btn"
+          (click)="pauseGame()"
+          [disabled]="controller()?.status() !== 'running'"
+        >
+          Pauza
+        </button>
+        <button
+          type="button"
+          class="btn"
+          (click)="resumeGame()"
+          [disabled]="controller()?.status() !== 'paused'"
+        >
+          Wznów
+        </button>
+        <button type="button" class="btn" (click)="restartGame()" [disabled]="!controller()">
+          Restart
+        </button>
+      </div>
+    </div>
+
+    <div class="game-shell__play-area">
+      <ng-container #gameHost></ng-container>
+
+      @if (isMounting() && !controller()) {
+        <p class="game-shell__status">Ładowanie gry...</p>
+      }
+
+      @if (loadError()) {
+        <p class="game-shell__error">Nie udało się załadować gry.</p>
+      }
+    </div>
+
+    <aside class="game-shell__help">
+      <h2 class="game-shell__help-title">Sterowanie</h2>
+      <ul class="game-shell__help-list">
+        @for (hint of currentGame.controls; track hint) {
+          <li>{{ hint }}</li>
+        }
+      </ul>
+    </aside>
+  </section>
+}
