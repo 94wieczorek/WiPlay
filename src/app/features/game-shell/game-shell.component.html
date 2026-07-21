@@ -24,47 +24,99 @@
         </div>
       </div>
 
-      <div class="game-shell__actions">
+      @if (levelController(); as levelGame) {
+        <div class="game-shell__level" aria-label="Poziom trudności">
+          <div class="game-shell__level-header">
+            <span class="game-shell__level-label">Poziom</span>
+            <strong class="game-shell__level-value">{{ levelGame.level() }}</strong>
+            <span class="game-shell__level-meta">{{ levelGame.levelMeta() }}</span>
+          </div>
+
+          <input
+            type="range"
+            class="game-shell__level-slider"
+            [min]="levelGame.minLevel"
+            [max]="levelGame.maxLevel"
+            step="1"
+            [value]="levelGame.level()"
+            [disabled]="!levelGame.canChangeLevel()"
+            (input)="onLevelSliderInput($event)"
+            aria-label="Wybierz poziom od 1 do 10"
+          />
+
+          <div class="game-shell__level-buttons" role="group" aria-label="Szybki wybór poziomu">
+            @for (option of levelGame.levels; track option) {
+              <button
+                type="button"
+                class="game-shell__level-btn"
+                [class.game-shell__level-btn--active]="levelGame.level() === option"
+                [disabled]="!levelGame.canChangeLevel()"
+                (click)="setGameLevel(option)"
+              >
+                {{ option }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="game-shell__controls-row">
+        <div class="game-shell__actions">
+          <button
+            type="button"
+            class="btn btn--primary"
+            (click)="startGame()"
+            [disabled]="!controller() || controller()?.status() === 'running'"
+          >
+            Start
+          </button>
+          <button
+            type="button"
+            class="btn"
+            (click)="pauseGame()"
+            [disabled]="controller()?.status() !== 'running'"
+          >
+            Pauza
+          </button>
+          <button
+            type="button"
+            class="btn"
+            (click)="resumeGame()"
+            [disabled]="controller()?.status() !== 'paused'"
+          >
+            Wznów
+          </button>
+          <button type="button" class="btn" (click)="restartGame()" [disabled]="!controller()">
+            Restart
+          </button>
+        </div>
+
         <button
           type="button"
-          class="btn btn--primary"
-          (click)="startGame()"
-          [disabled]="!controller() || controller()?.status() === 'running'"
+          class="btn btn--ghost game-shell__expand-btn"
+          (click)="toggleViewportExpanded()"
+          [attr.aria-pressed]="viewportExpanded()"
         >
-          Start
-        </button>
-        <button
-          type="button"
-          class="btn"
-          (click)="pauseGame()"
-          [disabled]="controller()?.status() !== 'running'"
-        >
-          Pauza
-        </button>
-        <button
-          type="button"
-          class="btn"
-          (click)="resumeGame()"
-          [disabled]="controller()?.status() !== 'paused'"
-        >
-          Wznów
-        </button>
-        <button type="button" class="btn" (click)="restartGame()" [disabled]="!controller()">
-          Restart
+          {{ viewportExpandLabel() }}
         </button>
       </div>
     </div>
 
-    <div class="game-shell__play-area">
-      <ng-container #gameHost></ng-container>
+    <div
+      class="game-shell__viewport"
+      [class.game-shell__viewport--expanded]="viewportExpanded()"
+    >
+      <div class="game-shell__play-area">
+        <ng-container #gameHost></ng-container>
 
-      @if (isMounting() && !controller()) {
-        <p class="game-shell__status">Ładowanie gry...</p>
-      }
+        @if (isMounting() && !controller()) {
+          <p class="game-shell__status">Ładowanie gry...</p>
+        }
 
-      @if (loadError()) {
-        <p class="game-shell__error">Nie udało się załadować gry.</p>
-      }
+        @if (loadError() && !controller()) {
+          <p class="game-shell__error">Nie udało się załadować gry.</p>
+        }
+      </div>
     </div>
 
     <aside class="game-shell__help">

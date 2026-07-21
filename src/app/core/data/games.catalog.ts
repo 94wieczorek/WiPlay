@@ -8,9 +8,11 @@ export const GAMES_CATALOG: readonly GameDefinition[] = [
     description: 'Klasyczny wąż — zbieraj jedzenie, unikaj ścian i własnego ogona.',
     category: 'Arcade',
     controls: [
+      'Pasek nad grą — poziom 1–10 (wyższy = szybciej i więcej punktów)',
       'Strzałki lub WASD — ruch',
       'Spacja — pauza',
       'R — restart po zakończeniu gry',
+      'Powiększ 2× — większy obszar gry',
     ],
     isAvailable: true,
   },

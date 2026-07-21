@@ -1,5 +1,11 @@
 import { GameStatus } from '../../../core/models/game-controller.model';
-import { Direction, Point, SnakeState } from './snake.models';
+import {
+  Direction,
+  getSnakeLevelConfig,
+  Point,
+  SNAKE_DEFAULT_LEVEL,
+  SnakeState,
+} from './snake.models';
 
 const OPPOSITE_DIRECTION: Record<Direction, Direction> = {
   up: 'down',
@@ -8,7 +14,11 @@ const OPPOSITE_DIRECTION: Record<Direction, Direction> = {
   right: 'left',
 };
 
-export function createInitialSnakeState(gridSize = 20, tickMs = 140): SnakeState {
+export function createInitialSnakeState(
+  gridSize = 20,
+  level = SNAKE_DEFAULT_LEVEL,
+): SnakeState {
+  const config = getSnakeLevelConfig(level);
   const center = Math.floor(gridSize / 2);
   const snake: Point[] = [
     { x: center, y: center },
@@ -24,7 +34,9 @@ export function createInitialSnakeState(gridSize = 20, tickMs = 140): SnakeState
     food: spawnFood(gridSize, snake),
     score: 0,
     status: 'idle',
-    tickMs,
+    tickMs: config.tickMs,
+    pointsPerFood: config.pointsPerFood,
+    level: config.level,
   };
 }
 
@@ -77,7 +89,7 @@ export function resumeSnake(state: SnakeState): SnakeState {
 }
 
 export function restartSnake(state: SnakeState): SnakeState {
-  return createInitialSnakeState(state.gridSize, state.tickMs);
+  return createInitialSnakeState(state.gridSize, state.level);
 }
 
 export function tickSnake(state: SnakeState): SnakeState {
@@ -107,7 +119,7 @@ export function tickSnake(state: SnakeState): SnakeState {
     direction,
     snake,
     food: ateFood ? spawnFood(state.gridSize, snake) : state.food,
-    score: ateFood ? state.score + 1 : state.score,
+    score: ateFood ? state.score + state.pointsPerFood : state.score,
     status: 'running' as GameStatus,
   };
 }

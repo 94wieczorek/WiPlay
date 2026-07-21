@@ -23,4 +23,21 @@ export class LocalStorageService {
 
     localStorage.setItem(key, String(value));
   }
+
+  getString(key: string, defaultValue = ''): string {
+    if (typeof localStorage === 'undefined') {
+      return defaultValue;
+    }
+
+    const raw = localStorage.getItem(key);
+    return raw ?? defaultValue;
+  }
+
+  setString(key: string, value: string): void {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+
+    localStorage.setItem(key, value);
+  }
 }

@@ -7,10 +7,11 @@ import {
   NgZone,
   OnDestroy,
   ViewChild,
+  computed,
   inject,
   signal,
 } from '@angular/core';
-import { GameController, GameStatus } from '../../../core/models/game-controller.model';
+import { GameController, GameStatus, LevelAwareGameController } from '../../../core/models/game-controller.model';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import {
   createInitialSnakeState,
@@ -21,7 +22,18 @@ import {
   startSnake,
   tickSnake,
 } from './snake.engine';
-import { Direction, SNAKE_BEST_SCORE_KEY, SnakeState } from './snake.models';
+import {
+  Direction,
+  SNAKE_DEFAULT_LEVEL,
+  SNAKE_LEVEL_KEY,
+  SNAKE_LEVELS,
+  SNAKE_MAX_LEVEL,
+  SNAKE_MIN_LEVEL,
+  SnakeState,
+  getSnakeBestScoreKey,
+  getSnakeLevelConfig,
+  parseSnakeLevel,
+} from './snake.models';
 
 @Component({
   selector: 'app-snake',
@@ -35,7 +47,7 @@ import { Direction, SNAKE_BEST_SCORE_KEY, SnakeState } from './snake.models';
     '(click)': 'focusGame()',
   },
 })
-export class SnakeComponent implements GameController, AfterViewInit, OnDestroy {
+export class SnakeComponent implements LevelAwareGameController, AfterViewInit, OnDestroy {
   private readonly localStorage = inject(LocalStorageService);
   private readonly ngZone = inject(NgZone);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
@@ -43,9 +55,22 @@ export class SnakeComponent implements GameController, AfterViewInit, OnDestroy 
   @ViewChild('canvas', { static: true })
   private readonly canvasRef!: ElementRef<HTMLCanvasElement>;
 
+  readonly levels = SNAKE_LEVELS;
+  readonly minLevel = SNAKE_MIN_LEVEL;
+  readonly maxLevel = SNAKE_MAX_LEVEL;
+  readonly level = signal(SNAKE_DEFAULT_LEVEL);
   readonly status = signal<GameStatus>('idle');
   readonly score = signal(0);
   readonly bestScore = signal(0);
+
+  readonly levelConfig = computed(() => getSnakeLevelConfig(this.level()));
+  readonly levelMeta = computed(
+    () => `+${this.levelConfig().pointsPerFood} pkt · ${this.levelConfig().tickMs} ms`,
+  );
+  readonly canChangeLevel = computed(() => {
+    const status = this.status();
+    return status === 'idle' || status === 'over';
+  });
 
   private state: SnakeState = createInitialSnakeState();
   private animationFrameId = 0;
@@ -53,7 +78,13 @@ export class SnakeComponent implements GameController, AfterViewInit, OnDestroy 
   private resizeObserver: ResizeObserver | null = null;
 
   constructor() {
-    this.bestScore.set(this.localStorage.getNumber(SNAKE_BEST_SCORE_KEY));
+    const savedLevel = parseSnakeLevel(
+      this.localStorage.getNumber(SNAKE_LEVEL_KEY, SNAKE_DEFAULT_LEVEL),
+    );
+
+    this.level.set(savedLevel);
+    this.state = createInitialSnakeState(20, savedLevel);
+    this.loadBestScoreForLevel(savedLevel);
     this.syncFromState(this.state);
   }
 
@@ -67,6 +98,12 @@ export class SnakeComponent implements GameController, AfterViewInit, OnDestroy 
     });
 
     this.resizeObserver.observe(this.canvasRef.nativeElement.parentElement ?? this.canvasRef.nativeElement);
+
+    const viewport = this.canvasRef.nativeElement.closest('.game-shell__viewport');
+    if (viewport) {
+      this.resizeObserver.observe(viewport);
+    }
+
     this.focusGame();
   }
 
@@ -99,6 +136,26 @@ export class SnakeComponent implements GameController, AfterViewInit, OnDestroy 
     this.state = restartSnake(this.state);
     this.syncFromState(this.state);
     this.draw();
+  }
+
+  setLevel(nextLevel: number): void {
+    const level = parseSnakeLevel(nextLevel);
+    if (!this.canChangeLevel() || this.level() === level) {
+      return;
+    }
+
+    this.stopLoop();
+    this.level.set(level);
+    this.localStorage.setNumber(SNAKE_LEVEL_KEY, level);
+    this.state = createInitialSnakeState(this.state.gridSize, level);
+    this.loadBestScoreForLevel(level);
+    this.syncFromState(this.state);
+    this.draw();
+  }
+
+  onLevelSliderInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.setLevel(Number(input.value));
   }
 
   setDirection(direction: Direction): void {
@@ -237,11 +294,16 @@ export class SnakeComponent implements GameController, AfterViewInit, OnDestroy 
     this.score.set(state.score);
   }
 
+  private loadBestScoreForLevel(level: number): void {
+    this.bestScore.set(this.localStorage.getNumber(getSnakeBestScoreKey(level)));
+  }
+
   private persistBestScore(): void {
+    const key = getSnakeBestScoreKey(this.level());
     const currentBest = this.bestScore();
     if (this.score() > currentBest) {
       this.bestScore.set(this.score());
-      this.localStorage.setNumber(SNAKE_BEST_SCORE_KEY, this.score());
+      this.localStorage.setNumber(key, this.score());
     }
   }
 
@@ -252,7 +314,12 @@ export class SnakeComponent implements GameController, AfterViewInit, OnDestroy 
       return;
     }
 
-    const size = Math.min(container.clientWidth, 520);
+    const viewport = container.closest('.game-shell__viewport') as HTMLElement | null;
+    const maxSizeRaw = viewport
+      ? getComputedStyle(viewport).getPropertyValue('--game-canvas-max').trim()
+      : '520px';
+    const maxSize = Number.parseInt(maxSizeRaw, 10) || 520;
+    const size = Math.min(container.clientWidth, maxSize);
     const dpr = window.devicePixelRatio || 1;
 
     canvas.width = size * dpr;
